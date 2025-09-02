@@ -7,7 +7,7 @@ interface CardStatsProps {
     title: string;
     amount: number;
     icon?: React.ReactNode;
-    percentage?: number; // pour afficher une part relative (facultatif)
+    percentage?: number;
 }
 
 export default function CardStats({ title, amount, icon, percentage }: CardStatsProps) {

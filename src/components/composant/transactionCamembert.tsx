@@ -15,7 +15,7 @@ interface CustomerRegionChartProps {
 
 export default function TransactionCamembert({ data }: CustomerRegionChartProps) {
     return (
-        <div className="shadow-card rounded-2xl w-full p-4">
+        <div className="shadow-card rounded-2xl h-full w-full p-4">
             {/* Header */}
             <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold mb-6">

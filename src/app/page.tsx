@@ -14,6 +14,9 @@ import TimeGraph from "@/components/composant/timeGraph";
 import {useRouter} from "next/navigation";
 import {Button} from "@/components/ui/button";
 import ThemeToggle from "@/components/composant/themeToggle";
+import YearGraph from "@/components/composant/yearGraph";
+import TagExpenses from "@/components/composant/tagExpenses";
+import Sidebar from "@/components/composant/sidebar";
 
 interface Transaction {
   id: number
@@ -153,6 +156,35 @@ const data = [
   { day: "Sunday", in: 600, out: 700 },
 ];
 
+const mockTags = [
+  { id: 1, nom: "Courses" },
+  { id: 2, nom: "Logement" },
+  { id: 3, nom: "Loisirs" },
+  { id: 4, nom: "Transport" },
+];
+
+const mockTransactions = [
+  { id: 1, solde: -50 },   // courses
+  { id: 2, solde: -200 },  // logement
+  { id: 3, solde: -30 },   // transport
+  { id: 4, solde: -70 },   // loisirs
+  { id: 5, solde: 1500 },  // revenu salaire
+  { id: 6, solde: -20 },   // courses
+  { id: 7, solde: -15 },   // transport
+];
+
+// ✅ Table de jointure
+const mockJoins = [
+  { id: 1, id_transaction: 1, id_tag: 1 },
+  { id: 2, id_transaction: 2, id_tag: 2 },
+  { id: 3, id_transaction: 3, id_tag: 4 },
+  { id: 4, id_transaction: 4, id_tag: 3 },
+  { id: 5, id_transaction: 6, id_tag: 1 },
+  { id: 6, id_transaction: 7, id_tag: 4 },
+];
+
+const totalSolde = mockTransactions.reduce((sum, t) => sum + t.solde, 0);
+
 export default function BankingDashboard() {
   const router = useRouter()
 
@@ -264,8 +296,11 @@ export default function BankingDashboard() {
   }
 
   return (
-      <div className="bg-background md:p-6">
-        <div className="mx-auto max-w-7xl space-y-6">
+      <div className="flex">
+        <Sidebar />
+        <main className="flex-1 bg-background md:p-6">
+          <div className="bg-background md:p-6">
+        <div className="mx-auto space-y-6">
           {/* Header */}
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
@@ -328,10 +363,14 @@ export default function BankingDashboard() {
             />
           </div>
 
-          <div className="grid lg:grid-cols-3 lg:grid-rows-[300px_400px] gap-4">
+          <div className="grid lg:grid-cols-3 lg:grid-rows-[300px_360px] gap-4">
             {/* TransactionCamembert : 2 cols, 1 row */}
-            <div className="col-span-2 row-span-1">
+            <div className="col-span-1 row-span-1">
               <TransactionCamembert data={regionData} />
+            </div>
+
+            <div className="col-span-1 row-span-1">
+              <TagExpenses tags={mockTags} transactions={mockTransactions} joins={mockJoins} totalSolde={totalSolde}/>
             </div>
 
             {/* TransactionList : 1 col, 2 rows */}
@@ -341,7 +380,7 @@ export default function BankingDashboard() {
 
             {/* TimeGraph : 2 cols, 1 row */}
             <div className="col-span-2 row-span-1">
-              <TimeGraph data={data} />
+              <YearGraph/>
             </div>
           </div>
 
@@ -457,6 +496,8 @@ export default function BankingDashboard() {
           {/*  </Card>*/}
           {/*</div>*/}
         </div>
+      </div>
+        </main>
       </div>
   )
 }

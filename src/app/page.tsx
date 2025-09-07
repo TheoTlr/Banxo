@@ -8,6 +8,11 @@ import DialogCompte from "@/components/composant/dialogCompte"
 import DialogTag from "@/components/composant/dialogTag";
 import DialogTransaction from "@/components/composant/dialogTransaction";
 import CardStats from "@/components/composant/cardStats";
+import TransactionList from "@/components/composant/transactionList";
+import TransactionCamembert from "@/components/composant/transactionCamembert";
+import TimeGraph from "@/components/composant/timeGraph";
+import {useRouter} from "next/navigation";
+import {Button} from "@/components/ui/button";
 
 interface Transaction {
   id: number
@@ -31,28 +36,103 @@ interface Compte {
   proprietaire: string,
 }
 
+const sampleTransactions = [
+  {
+    id: 1,
+    type: "income",
+    title: "Deposit Waste",
+    subtitle: "Hotel Garden",
+    amount: 291,
+    date: "13 Jan 2020",
+  },
+  {
+    id: 2,
+    type: "income",
+    title: "Deposit Waste",
+    subtitle: "Plastic Factory",
+    amount: 691,
+    date: "13 Jan 2020",
+  },
+  {
+    id: 3,
+    type: "expense",
+    title: "Transfer Deposit",
+    subtitle: "Customer Andy",
+    amount: 80,
+    date: "13 Jan 2020",
+  },
+];
+
+const regionData = [
+  { name: "Bojongsoang", value: 854, color: "#FF4D94" }, // rose
+  { name: "Baleendah", value: 620, color: "#28D7A2" },  // vert
+  { name: "Sukapura", value: 420, color: "#1FA2FF" },   // bleu
+  { name: "Mekarsari", value: 300, color: "#8B5CF6" },  // violet
+];
+
+const data = [
+  { day: "Monday", in: 700, out: 300 },
+  { day: "Tuesday", in: 800, out: 400 },
+  { day: "Wednesday", in: 500, out: 900 },
+  { day: "Thursday", in: 300, out: 600 },
+  { day: "Friday", in: 700, out: 200 },
+  { day: "Saturday", in: 900, out: 500 },
+  { day: "Sunday", in: 600, out: 700 },
+];
+
 export default function BankingDashboard() {
+  const router = useRouter()
+
+  // 🔐 États d'auth
+  const [session, setSession] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+
   // Charger les comptes
   const [comptes, setComptes] = useState<Compte[]>([])
+  const [selectedAccountId, setSelectedAccountId] = useState<number | null>(null)
+  const [selectedAccount, setSelectedAccount] = useState<Compte>({
+    id: 0,
+    nom: "",
+    proprietaire: "",
+    solde: 0,
+  })
+
+  // Charger les tags
+  const [tags, setTags] = useState<Tag[]>([])
+
+  // Charger les transactions
+  const [transactions, setTransactions] = useState<Transaction[]>([])
+
+  // Vérif session
+  useEffect(() => {
+    const getSession = async () => {
+      const { data } = await supabase.auth.getSession()
+      if (!data.session) {
+        router.push("/login")
+      } else {
+        setSession(data.session)
+      }
+      setLoading(false)
+    }
+    getSession()
+  }, [router])
+
+  // --- tes fonctions fetch --- //
   const fetchCompte = async () => {
     const { data, error } = await supabase.from("compte").select("*").order("solde")
     if (error) console.error(error)
-    else {
+    else if (data && data.length > 0) {
       setComptes(data)
       setSelectedAccount(data[0])
     }
   }
 
-  // Charger les tags
-  const [tags, setTags] = useState<Tag[]>([])
   const fetchTags = async () => {
     const { data, error } = await supabase.from("tag").select("*").order("nom")
     if (error) console.error(error)
     else setTags(data)
   }
 
-  // Charger les transactions
-  const [transactions, setTransactions] = useState<Transaction[]>([])
   const fetchTransactions = async () => {
     const { data, error } = await supabase
         .from("transaction")
@@ -63,16 +143,14 @@ export default function BankingDashboard() {
         date_transaction,
         type_transaction,
         j_transaction_tag (
-          tag: tag (
-            id, nom
-          )
+          tag: tag ( id, nom )
         )
       `)
         .order("date_transaction", { ascending: false })
 
     if (error) {
       console.error(error)
-    } else {
+    } else if (data) {
       const normalized = data.map((t: any) => ({
         ...t,
         tags: t.j_transaction_tag,
@@ -81,30 +159,36 @@ export default function BankingDashboard() {
     }
   }
 
-  // Selection du compte qu'on affiche
-  const [selectedAccountId, setSelectedAccountId] = useState<number | null>(null);
-  const [selectedAccount, setSelectedAccount] = useState<Compte>({
-      id: 0,
-      nom: "",
-      proprietaire: "",
-      solde: 0,
-  });
+  // Initialisation (seulement si connecté)
+  useEffect(() => {
+    if (session) {
+      fetchTransactions()
+      fetchTags()
+      fetchCompte()
+    }
+  }, [session])
 
   const handleChange = (value: string) => {
-    const id = Number(value);
-    setSelectedAccountId(id);
-    const account = comptes.find((c) => c.id === id) ;
-    if (account != null) {
-      setSelectedAccount(account);
+    const id = Number(value)
+    setSelectedAccountId(id)
+    const account = comptes.find((c) => c.id === id)
+    if (account) {
+      setSelectedAccount(account)
     }
-  };
+  }
 
-  // Initialisation
-  useEffect(() => {
-    fetchTransactions()
-    fetchTags()
-    fetchCompte()
-  }, [])
+  // --- rendu conditionnel --- //
+  if (loading) {
+    return (
+        <div className="flex items-center justify-center h-screen">
+          Chargement...
+        </div>
+    )
+  }
+
+  if (!session) {
+    return null // en attendant redirection
+  }
 
   return (
       <div className="min-h-screen bg-background p-4 md:p-6">
@@ -134,6 +218,15 @@ export default function BankingDashboard() {
             <DialogCompte onAccountCreated={fetchCompte} />
             <DialogTransaction comptes={comptes} tags={tags} onTransactionCreated={fetchTransactions}/>
             <DialogTag onTagCreated={fetchTags} />
+            <Button
+                variant="outline"
+                onClick={async () => {
+                  await supabase.auth.signOut()
+                  router.push("/login")
+                }}
+            >
+              Déconnexion
+            </Button>
           </div>
 
           {/* Overview Cards */}
@@ -160,6 +253,14 @@ export default function BankingDashboard() {
             />
           </div>
 
+          <div className="grid gap-6 lg:grid-cols-2">
+            <TransactionList transactions={sampleTransactions}/>
+            <TransactionCamembert data={regionData}/>
+          </div>
+          <div className="grid gap-6 lg:grid-cols-2">
+            <TimeGraph data={data}/>
+          </div>
+          
           {/* Charts and Transactions */}
           {/*<div className="grid gap-6 lg:grid-cols-2">*/}
           {/*  /!* Charts *!/*/}

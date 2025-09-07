@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,22 +21,48 @@ interface DialogCompteProps {
 
 export default function DialogCompte({ onAccountCreated }: DialogCompteProps) {
     const [isOpen, setIsOpen] = useState(false);
+    const [userId, setUserId] = useState<string | null>(null);
     const [newCompte, setNewCompte] = useState({
         nom: "",
         proprietaire: "",
         solde: 0,
+        principal: false,
     });
 
+    useEffect(() => {
+        const getUser = async () => {
+            const { data, error } = await supabase.auth.getUser();
+            if (error) {
+                console.error("Erreur récupération user:", error.message);
+            } else if (data?.user) {
+                setUserId(data.user.id);
+            }
+        };
+        getUser();
+    }, []);
+
     const addAccount = async () => {
-        const { error } = await supabase.from("compte").insert([newCompte]);
+        if (!userId) {
+            alert("Impossible de créer un compte sans utilisateur connecté.");
+            return;
+        }
+
+        const compteToInsert = {
+            nom: newCompte.nom,
+            proprietaire: userId, // ✅ UUID automatiquement assigné
+            solde: newCompte.solde,
+            principal: false,
+        };
+
+        const { error } = await supabase.from("compte").insert([compteToInsert]);
         if (error) {
             console.error("Erreur Supabase:", JSON.stringify(error, null, 2));
             return;
         }
 
         setIsOpen(false);
-        setNewCompte({ nom: "", proprietaire: "", solde: 0 });
-        onAccountCreated(); // refresh depuis la page parent
+        setNewCompte({ nom: "", proprietaire: "", solde: 0, principal: false });
+        onAccountCreated();
     };
 
     return (
@@ -62,15 +88,6 @@ export default function DialogCompte({ onAccountCreated }: DialogCompteProps) {
                         />
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="account-owner">Propriétaire</Label>
-                        <Input
-                            id="account-owner"
-                            placeholder="Ex: Jean Dupont"
-                            value={newCompte.proprietaire}
-                            onChange={(e) => setNewCompte({ ...newCompte, proprietaire: e.target.value })}
-                        />
-                    </div>
-                    <div className="space-y-2">
                         <Label htmlFor="account-balance">Solde (€)</Label>
                         <Input
                             id="account-balance"
@@ -82,8 +99,8 @@ export default function DialogCompte({ onAccountCreated }: DialogCompteProps) {
                     </div>
                     <Button
                         onClick={() => {
-                            if (!newCompte.nom || !newCompte.proprietaire) {
-                                alert("Merci de remplir tous les champs !");
+                            if (!newCompte.nom) {
+                                alert("Merci de remplir le nom du compte !");
                                 return;
                             }
                             addAccount();

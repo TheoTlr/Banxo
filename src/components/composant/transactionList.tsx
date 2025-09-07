@@ -1,18 +1,19 @@
 "use client";
 
-import { ArrowDownLeft, ArrowUpRight } from "lucide-react";
+import {ArrowDownLeft, ArrowUpRight} from "lucide-react";
 
-interface TransactionTT {
-    id: number;
-    type: "income" | "expense"; // income = bleu (entrée), expense = rouge (sortie)
-    title: string;
-    subtitle: string;
-    amount: number;
-    date: string;
+interface Transaction {
+    id: number
+    compte_id: number
+    montant: number
+    description: string
+    date_transaction: string
+    type_transaction: "REVENU" | "DEPENSE"
+    tags: { tag: { id: number; nom: string } }[]
 }
 
 interface TransactionListProps {
-    transactions: TransactionTT[];
+    transactions: Transaction[];
 }
 
 export default function TransactionList({ transactions }: TransactionListProps) {
@@ -20,8 +21,7 @@ export default function TransactionList({ transactions }: TransactionListProps) 
         <div className="shadow-card rounded-2xl w-full p-4 h-full flex flex-col">
             {/* Header */}
             <div className="flex justify-between items-center mb-4 flex-shrink-0">
-                <h2 className="text-lg font-semibold text-text-primary">Last Transaction</h2>
-                <button className="text-sm text-brand-blue hover:underline">See All</button>
+                <h2 className="text-lg font-semibold text-text-primary">Transaction du mois</h2>
             </div>
 
             {/* Transactions avec scroll */}
@@ -35,27 +35,27 @@ export default function TransactionList({ transactions }: TransactionListProps) 
                         <div className="flex items-center gap-3">
                             <div
                                 className={`p-3 rounded-full ${
-                                    tx.type === "income"
+                                    tx.type_transaction === "REVENU"
                                         ? "bg-brand-blue/20 text-brand-blue"
                                         : "bg-brand-pink/20 text-brand-pink"
                                 }`}
                             >
-                                {tx.type === "income" ? (
+                                {tx.type_transaction === "REVENU" ? (
                                     <ArrowUpRight className="w-5 h-5" />
                                 ) : (
                                     <ArrowDownLeft className="w-5 h-5" />
                                 )}
                             </div>
                             <div>
-                                <p className="text-text-primary font-medium">{tx.title}</p>
-                                <p className="text-xs text-text-secondary">{tx.subtitle}</p>
+                                <p className="text-text-primary font-medium">{tx.description}</p>
+                                <p className="text-xs text-text-secondary">{tx.tags.map((t) => t.tag.nom).join(", ")}</p>
                             </div>
                         </div>
 
                         {/* Amount + Date */}
                         <div className="text-right">
-                            <p className="text-text-primary font-semibold">${tx.amount}</p>
-                            <p className="text-xs text-text-secondary">{tx.date}</p>
+                            <p className="text-text-primary font-semibold">{tx.montant}€</p>
+                            <p className="text-xs text-text-secondary">{tx.date_transaction}</p>
                         </div>
                     </div>
                 ))}

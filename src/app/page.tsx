@@ -24,7 +24,7 @@ interface Transaction {
   montant: number
   description: string
   date_transaction: string
-  type_transaction: "income" | "expense"
+  type_transaction: "REVENU" | "DEPENSE"
   tags: { tag: { id: number; nom: string } }[]
 }
 
@@ -251,6 +251,8 @@ export default function BankingDashboard() {
           tag: tag ( id, nom )
         )
       `)
+        .gte("date_transaction", new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString())
+        .lte("date_transaction", new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toISOString())
         .order("date_transaction", { ascending: false })
 
     if (error) {
@@ -375,7 +377,7 @@ export default function BankingDashboard() {
 
             {/* TransactionList : 1 col, 2 rows */}
             <div className="col-span-1 row-span-2">
-              <TransactionList transactions={sampleTransactions} />
+              <TransactionList transactions={transactions}/>
             </div>
 
             {/* TimeGraph : 2 cols, 1 row */}

@@ -15,7 +15,7 @@ interface CustomerRegionChartProps {
 
 export default function TransactionCamembert({ data }: CustomerRegionChartProps) {
     return (
-        <div className="card w-full max-w-md">
+        <div className="shadow-card rounded-2xl w-full p-4">
             {/* Header */}
             <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold mb-6">
@@ -52,13 +52,13 @@ export default function TransactionCamembert({ data }: CustomerRegionChartProps)
                                     if (active && payload && payload.length) {
                                         const { name, value } = payload[0].payload;
                                         return (
-                                            <div className="bg-[#1A1C2C] text-white text-sm rounded-lg px-3 py-2 shadow-lg">
+                                            <div className="text-sm rounded-lg px-3 py-2 shadow-lg">
                                                 <div className="flex items-center gap-2">
-                                                    <MapPin className="w-4 h-4 text-gray-300" />
+                                                    <MapPin className="w-4 h-4 " />
                                                     {name}
                                                 </div>
                                                 <div className="flex items-center gap-2 mt-1">
-                                                    <User className="w-4 h-4 text-gray-300" />
+                                                    <User className="w-4 h-4" />
                                                     {value}
                                                 </div>
                                             </div>
@@ -79,7 +79,7 @@ export default function TransactionCamembert({ data }: CustomerRegionChartProps)
                   className="w-3 h-3 rounded-sm"
                   style={{ backgroundColor: entry.color }}
               />
-                            <span className="text-gray-300 text-sm">{entry.name}</span>
+                            <span className="text-sm">{entry.name}</span>
                         </div>
                     ))}
                 </div>

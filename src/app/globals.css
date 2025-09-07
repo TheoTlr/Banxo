@@ -1,19 +1,46 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import "tw-animate-css";
 
-/* 🌍 Styles globaux */
+/* 🎨 Light mode (par défaut) */
+:root {
+  --background: #ffffff;
+  --background-secondary: #f3f4f6;
+  --background-card: #f9fafb;
+  --background-border: #e5e7eb;
+
+  --text-primary: #111322;
+  --text-secondary: #374151;
+
+  --brand-blue: #2563eb;
+  --brand-pink: #5EF527;
+  --brand-purple: #7c3aed;
+}
+
+/* 🌙 Dark mode */
+.dark {
+  --background: #111322;
+  --background-secondary: #1a1c2c;
+  --background-card: #1f2233;
+  --background-border: #2a2d45;
+
+  --text-primary: #f9fafb;
+  --text-secondary: #9ca3af;
+
+  --brand-blue: #38bdf8;
+  --brand-pink: #ff4d94;
+  --brand-purple: #a855f7;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
+}
+.scrollbar-none {
+  -ms-overflow-style: none; /* IE et Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+/* Exemples globaux */
 body {
-  @apply bg-background-secondary text-white;
-  font-family: theme("fontFamily.sans"), serif;
-}
-
-/* 🌟 Composants réutilisables */
-.card {
-  @apply bg-background-card shadow-md rounded-2xl p-4;
-}
-
-.text-brand {
-  @apply text-brand-blue font-semibold;
+  @apply bg-background text-text-primary antialiased;
 }

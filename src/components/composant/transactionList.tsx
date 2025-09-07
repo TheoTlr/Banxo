@@ -17,17 +17,15 @@ interface TransactionListProps {
 
 export default function TransactionList({ transactions }: TransactionListProps) {
     return (
-        <div className="bg-background-card shadow-card rounded-2xl w-full max-w-sm p-4">
+        <div className="shadow-card rounded-2xl w-full p-4 h-full flex flex-col">
             {/* Header */}
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex justify-between items-center mb-4 flex-shrink-0">
                 <h2 className="text-lg font-semibold text-text-primary">Last Transaction</h2>
-                <button className="text-sm text-brand-blue hover:underline">
-                    See All
-                </button>
+                <button className="text-sm text-brand-blue hover:underline">See All</button>
             </div>
 
-            {/* Transactions */}
-            <div className="space-y-2">
+            {/* Transactions avec scroll */}
+            <div className="space-y-2 overflow-y-auto flex-1 scrollbar-none">
                 {transactions.map((tx) => (
                     <div
                         key={tx.id}
@@ -65,3 +63,4 @@ export default function TransactionList({ transactions }: TransactionListProps) 
         </div>
     );
 }
+

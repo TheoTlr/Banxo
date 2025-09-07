@@ -13,6 +13,7 @@ import TransactionCamembert from "@/components/composant/transactionCamembert";
 import TimeGraph from "@/components/composant/timeGraph";
 import {useRouter} from "next/navigation";
 import {Button} from "@/components/ui/button";
+import ThemeToggle from "@/components/composant/themeToggle";
 
 interface Transaction {
   id: number
@@ -55,6 +56,78 @@ const sampleTransactions = [
   },
   {
     id: 3,
+    type: "expense",
+    title: "Transfer Deposit",
+    subtitle: "Customer Andy",
+    amount: 80,
+    date: "13 Jan 2020",
+  },
+  {
+    id: 4,
+    type: "income",
+    title: "Deposit Waste",
+    subtitle: "Hotel Garden",
+    amount: 291,
+    date: "13 Jan 2020",
+  },
+  {
+    id: 5,
+    type: "income",
+    title: "Deposit Waste",
+    subtitle: "Plastic Factory",
+    amount: 691,
+    date: "13 Jan 2020",
+  },
+  {
+    id: 6,
+    type: "expense",
+    title: "Transfer Deposit",
+    subtitle: "Customer Andy",
+    amount: 80,
+    date: "13 Jan 2020",
+  },
+  {
+    id: 7,
+    type: "income",
+    title: "Deposit Waste",
+    subtitle: "Hotel Garden",
+    amount: 291,
+    date: "13 Jan 2020",
+  },
+  {
+    id: 8,
+    type: "income",
+    title: "Deposit Waste",
+    subtitle: "Plastic Factory",
+    amount: 691,
+    date: "13 Jan 2020",
+  },
+  {
+    id: 9,
+    type: "expense",
+    title: "Transfer Deposit",
+    subtitle: "Customer Andy",
+    amount: 80,
+    date: "13 Jan 2020",
+  },
+  {
+    id: 10,
+    type: "income",
+    title: "Deposit Waste",
+    subtitle: "Hotel Garden",
+    amount: 291,
+    date: "13 Jan 2020",
+  },
+  {
+    id: 11,
+    type: "income",
+    title: "Deposit Waste",
+    subtitle: "Plastic Factory",
+    amount: 691,
+    date: "13 Jan 2020",
+  },
+  {
+    id: 12,
     type: "expense",
     title: "Transfer Deposit",
     subtitle: "Customer Andy",
@@ -191,7 +264,7 @@ export default function BankingDashboard() {
   }
 
   return (
-      <div className="min-h-screen bg-background p-4 md:p-6">
+      <div className="bg-background md:p-6">
         <div className="mx-auto max-w-7xl space-y-6">
           {/* Header */}
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -227,6 +300,8 @@ export default function BankingDashboard() {
             >
               Déconnexion
             </Button>
+
+            <ThemeToggle/>
           </div>
 
           {/* Overview Cards */}
@@ -253,13 +328,23 @@ export default function BankingDashboard() {
             />
           </div>
 
-          <div className="grid gap-6 lg:grid-cols-2">
-            <TransactionList transactions={sampleTransactions}/>
-            <TransactionCamembert data={regionData}/>
+          <div className="grid lg:grid-cols-3 lg:grid-rows-[300px_400px] gap-4">
+            {/* TransactionCamembert : 2 cols, 1 row */}
+            <div className="col-span-2 row-span-1">
+              <TransactionCamembert data={regionData} />
+            </div>
+
+            {/* TransactionList : 1 col, 2 rows */}
+            <div className="col-span-1 row-span-2">
+              <TransactionList transactions={sampleTransactions} />
+            </div>
+
+            {/* TimeGraph : 2 cols, 1 row */}
+            <div className="col-span-2 row-span-1">
+              <TimeGraph data={data} />
+            </div>
           </div>
-          <div className="grid gap-6 lg:grid-cols-2">
-            <TimeGraph data={data}/>
-          </div>
+
           
           {/* Charts and Transactions */}
           {/*<div className="grid gap-6 lg:grid-cols-2">*/}

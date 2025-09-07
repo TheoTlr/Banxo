@@ -1,27 +1,26 @@
 //tailwind.config.js
 module.exports = {
     content: [
-        "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-        "./components/**/*.{js,ts,jsx,tsx,mdx}",
-        "./app/**/*.{js,ts,jsx,tsx,mdx}",
+        "./src/**/*.{js,ts,jsx,tsx,mdx}",
     ],
+    darkMode: "class",
     theme: {
         extend: {
             colors: {
                 background: {
-                    DEFAULT: "#111322",
-                    secondary: "#1A1C2C",
-                    card: "#1F2233",
-                    border: "#2A2D45",
+                    DEFAULT: "var(--background)",
+                    secondary: "var(--background-secondary)",
+                    card: "var(--background-card)",
+                    border: "var(--background-border)",
                 },
                 text: {
-                    primary: "#F9FAFB",
-                    secondary: "#9CA3AF",
+                    primary: "var(--text-primary)",
+                    secondary: "var(--text-secondary)",
                 },
                 brand: {
-                    blue: "#38BDF8",
-                    pink: "#FF4D94",
-                    purple: "#A855F7",
+                    blue: "var(--brand-blue)",
+                    pink: "var(--brand-pink)",
+                    purple: "var(--brand-purple)",
                 },
             },
             boxShadow: {

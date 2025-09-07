@@ -1,7 +1,6 @@
 "use client";
 
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { cn } from "@/lib/utils"; // utilitaire tailwind (optionnel)
 
 interface CardStatsProps {
     title: string;
@@ -15,19 +14,16 @@ export default function CardStats({ title, amount, icon, percentage }: CardStats
         <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">{title}</CardTitle>
-                {icon && <div className="text-muted-foreground">{icon}</div>}
+                {icon && <div>{icon}</div>}
             </CardHeader>
             <CardContent>
                 <div
-                    className={cn(
-                        "text-2xl font-bold",
-                        amount >= 0 ? "text-primary" : "text-destructive"
-                    )}
+                    className={"text-2xl font-bold"}
                 >
                     {amount.toFixed(2)} €
                 </div>
                 {percentage !== undefined && (
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs">
                         {amount >= 0 ? "+" : ""}
                         {percentage.toFixed(1)}% du revenu total
                     </p>

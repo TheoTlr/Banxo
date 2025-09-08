@@ -36,7 +36,6 @@ export default function BankingDashboard() {
     selectedAccount,
     fetchCompte,
     fetchCompteMonth,
-    fetchTags,
     fetchTransactions,
     setSelectedAccount,
   } = useBankingStore()
@@ -60,10 +59,9 @@ export default function BankingDashboard() {
     if (session) {
       fetchCompte()
       fetchCompteMonth()
-      fetchTags()
       fetchTransactions()
     }
-  }, [session, fetchCompte, fetchCompteMonth, fetchTags, fetchTransactions])
+  }, [session, fetchCompte, fetchCompteMonth, fetchTransactions])
 
   if (loading) {
     return <div className="flex items-center justify-center h-screen">Chargement...</div>
@@ -104,7 +102,7 @@ export default function BankingDashboard() {
 
                 <DialogCompte onAccountCreated={fetchCompte} />
                 <DialogTransaction comptes={comptes} tags={tags} />
-                <DialogTag onTagCreated={fetchTags} />
+                <DialogTag />
                 <Button
                     variant="outline"
                     onClick={async () => {

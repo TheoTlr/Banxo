@@ -11,12 +11,13 @@ interface Transaction {
     description: string
     date_transaction: string
     type_transaction: "REVENU" | "DEPENSE"
-    tags: { tag: { id: number; nom: string } }[]
+    tags: { tag: { id: number; nom: string, couleur: string } }[]
 }
 
 interface Tag {
     id: number
     nom: string
+    color: string
 }
 
 interface Compte {
@@ -125,7 +126,7 @@ export const useBankingStore = create<BankingState>((set, get) => ({
         date_transaction,
         type_transaction,
         j_transaction_tag (
-          tag: tag ( id, nom )
+          tag: tag ( id, nom, couleur )
         )
       `)
             .gte("date_transaction", new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString())

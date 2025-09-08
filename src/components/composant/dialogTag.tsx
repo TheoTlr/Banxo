@@ -8,11 +8,8 @@ import { Button } from "@/components/ui/button";
 import { FolderPlus } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient"; // adapte selon ton projet
 
-interface DialogTagProps {
-    onTagCreated: () => void; // callback pour refresh la liste des tags
-}
 
-export default function DialogTag({ onTagCreated }: DialogTagProps) {
+export default function DialogTag() {
     const [isOpen, setIsOpen] = useState(false);
     const [newTag, setNewTag] = useState("");
 
@@ -27,7 +24,6 @@ export default function DialogTag({ onTagCreated }: DialogTagProps) {
 
         setNewTag("");
         setIsOpen(false);
-        onTagCreated(); // refresh depuis le parent
     };
 
     return (

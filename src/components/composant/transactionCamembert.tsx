@@ -1,25 +1,36 @@
 "use client";
 
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
-import { MapPin, User } from "lucide-react";
+import {Cell, Pie, PieChart, ResponsiveContainer} from "recharts";
+import {useBankingStore} from "@/store/bankingStore";
 
-interface RegionData {
-    name: string;
-    value: number;
-    color: string;
-}
+export default function TransactionCamembert() {
+    const transactions = useBankingStore((state) => state.transactions)
 
-interface CustomerRegionChartProps {
-    data: RegionData[];
-}
+    const regionData = transactions
+        .filter(t => t.type_transaction === "DEPENSE")
+        .reduce((acc: { name: string; value: number; color: string }[], t) => {
+        t.tags.forEach((rel) => {
+            const tag = rel.tag
+            const existing = acc.find((item) => item.name === tag.nom)
+            if (existing) {
+                existing.value += t.montant
+            } else {
+                acc.push({
+                    name: tag.nom,
+                    value: t.montant,
+                    color: tag.couleur || "#888888", // couleur par défaut si elle n’existe pas
+                })
+            }
+        })
+        return acc
+    }, [])
 
-export default function TransactionCamembert({ data }: CustomerRegionChartProps) {
     return (
         <div className="shadow-card rounded-2xl h-full w-full p-4">
             {/* Header */}
             <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold mb-6">
-                    Customer based region
+                    Dépenses Mensuel
                 </h2>
                 <div className="flex items-center gap-6">
                     <button className="w-6 h-6 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center">
@@ -37,43 +48,23 @@ export default function TransactionCamembert({ data }: CustomerRegionChartProps)
                     <ResponsiveContainer>
                         <PieChart>
                             <Pie
-                                data={data}
+                                data={regionData}
                                 dataKey="value"
                                 innerRadius={45}
                                 outerRadius={70}
                                 paddingAngle={5}
                             >
-                                {data.map((entry, index) => (
+                                {regionData.map((entry, index) => (
                                     <Cell key={`cell-${index}`} fill={entry.color} />
                                 ))}
                             </Pie>
-                            <Tooltip
-                                content={({ active, payload }) => {
-                                    if (active && payload && payload.length) {
-                                        const { name, value } = payload[0].payload;
-                                        return (
-                                            <div className="text-sm rounded-lg px-3 py-2 shadow-lg">
-                                                <div className="flex items-center gap-2">
-                                                    <MapPin className="w-4 h-4 " />
-                                                    {name}
-                                                </div>
-                                                <div className="flex items-center gap-2 mt-1">
-                                                    <User className="w-4 h-4" />
-                                                    {value}
-                                                </div>
-                                            </div>
-                                        );
-                                    }
-                                    return null;
-                                }}
-                            />
                         </PieChart>
                     </ResponsiveContainer>
                 </div>
 
                 {/* Legend */}
                 <div className="space-y-3">
-                    {data.map((entry, i) => (
+                    {regionData.map((entry, i) => (
                         <div key={i} className="flex items-center gap-2">
               <span
                   className="w-3 h-3 rounded-sm"

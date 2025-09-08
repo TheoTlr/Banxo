@@ -5,8 +5,6 @@ import {useBankingStore} from "@/store/bankingStore";
 
 export default function TransactionList() {
     const transactions = useBankingStore((state) => state.transactions)
-    console.log("Transaction :", transactions)
-
 
     return (
         <div className="shadow-card rounded-2xl w-full p-4 h-full flex flex-col">

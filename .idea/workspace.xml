@@ -4,14 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c32cb8a2-9565-4e0a-b37b-64e830ae9b25" name="Changes" comment="Composant TransactionList">
-      <change afterPath="$PROJECT_DIR$/src/store/bankingStore.ts" afterDir="false" />
+    <list default="true" id="c32cb8a2-9565-4e0a-b37b-64e830ae9b25" name="Changes" comment="Mise en place d'un store">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/composant/dialogTransaction.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/composant/dialogTransaction.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/composant/dialogTag.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/composant/dialogTag.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/composant/transactionCamembert.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/composant/transactionCamembert.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/composant/transactionList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/composant/transactionList.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/store/bankingStore.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/store/bankingStore.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -135,7 +134,15 @@
       <option name="project" value="LOCAL" />
       <updated>1757266223491</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Mise en place d'un store">
+      <option name="closed" value="true" />
+      <created>1757363162569</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1757363162569</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -158,6 +165,7 @@
     <MESSAGE value="Mise en forme" />
     <MESSAGE value="Fix before branches" />
     <MESSAGE value="Composant Year Graph" />
-    <option name="LAST_COMMIT_MESSAGE" value="Composant Year Graph" />
+    <MESSAGE value="Mise en place d'un store" />
+    <option name="LAST_COMMIT_MESSAGE" value="Mise en place d'un store" />
   </component>
 </project>

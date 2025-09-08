@@ -10,7 +10,7 @@ import DialogTransaction from "@/components/composant/dialogTransaction";
 import CardStats from "@/components/composant/cardStats";
 import TransactionList from "@/components/composant/transactionList";
 import TransactionCamembert from "@/components/composant/transactionCamembert";
-import TimeGraph from "@/components/composant/timeGraph";
+import {format} from "date-fns";
 import {useRouter} from "next/navigation";
 import {Button} from "@/components/ui/button";
 import ThemeToggle from "@/components/composant/themeToggle";
@@ -40,120 +40,11 @@ interface Compte {
   proprietaire: string,
 }
 
-const sampleTransactions = [
-  {
-    id: 1,
-    type: "income",
-    title: "Deposit Waste",
-    subtitle: "Hotel Garden",
-    amount: 291,
-    date: "13 Jan 2020",
-  },
-  {
-    id: 2,
-    type: "income",
-    title: "Deposit Waste",
-    subtitle: "Plastic Factory",
-    amount: 691,
-    date: "13 Jan 2020",
-  },
-  {
-    id: 3,
-    type: "expense",
-    title: "Transfer Deposit",
-    subtitle: "Customer Andy",
-    amount: 80,
-    date: "13 Jan 2020",
-  },
-  {
-    id: 4,
-    type: "income",
-    title: "Deposit Waste",
-    subtitle: "Hotel Garden",
-    amount: 291,
-    date: "13 Jan 2020",
-  },
-  {
-    id: 5,
-    type: "income",
-    title: "Deposit Waste",
-    subtitle: "Plastic Factory",
-    amount: 691,
-    date: "13 Jan 2020",
-  },
-  {
-    id: 6,
-    type: "expense",
-    title: "Transfer Deposit",
-    subtitle: "Customer Andy",
-    amount: 80,
-    date: "13 Jan 2020",
-  },
-  {
-    id: 7,
-    type: "income",
-    title: "Deposit Waste",
-    subtitle: "Hotel Garden",
-    amount: 291,
-    date: "13 Jan 2020",
-  },
-  {
-    id: 8,
-    type: "income",
-    title: "Deposit Waste",
-    subtitle: "Plastic Factory",
-    amount: 691,
-    date: "13 Jan 2020",
-  },
-  {
-    id: 9,
-    type: "expense",
-    title: "Transfer Deposit",
-    subtitle: "Customer Andy",
-    amount: 80,
-    date: "13 Jan 2020",
-  },
-  {
-    id: 10,
-    type: "income",
-    title: "Deposit Waste",
-    subtitle: "Hotel Garden",
-    amount: 291,
-    date: "13 Jan 2020",
-  },
-  {
-    id: 11,
-    type: "income",
-    title: "Deposit Waste",
-    subtitle: "Plastic Factory",
-    amount: 691,
-    date: "13 Jan 2020",
-  },
-  {
-    id: 12,
-    type: "expense",
-    title: "Transfer Deposit",
-    subtitle: "Customer Andy",
-    amount: 80,
-    date: "13 Jan 2020",
-  },
-];
-
 const regionData = [
   { name: "Bojongsoang", value: 854, color: "#FF4D94" }, // rose
   { name: "Baleendah", value: 620, color: "#28D7A2" },  // vert
   { name: "Sukapura", value: 420, color: "#1FA2FF" },   // bleu
   { name: "Mekarsari", value: 300, color: "#8B5CF6" },  // violet
-];
-
-const data = [
-  { day: "Monday", in: 700, out: 300 },
-  { day: "Tuesday", in: 800, out: 400 },
-  { day: "Wednesday", in: 500, out: 900 },
-  { day: "Thursday", in: 300, out: 600 },
-  { day: "Friday", in: 700, out: 200 },
-  { day: "Saturday", in: 900, out: 500 },
-  { day: "Sunday", in: 600, out: 700 },
 ];
 
 const mockTags = [
@@ -194,6 +85,7 @@ export default function BankingDashboard() {
 
   // Charger les comptes
   const [comptes, setComptes] = useState<Compte[]>([])
+  const [comptesMonth, setComptesMonth] = useState<any>([])
   const [selectedAccountId, setSelectedAccountId] = useState<number | null>(null)
   const [selectedAccount, setSelectedAccount] = useState<Compte>({
     id: 0,
@@ -231,6 +123,71 @@ export default function BankingDashboard() {
       setSelectedAccount(data[0])
     }
   }
+
+  const fetchCompteMonth = async () => {
+    const { data, error } = await supabase
+        .from("compte_month")
+        .select(
+            `
+      *,
+      compte_id (
+        proprietaire
+      )
+    `
+        )
+        .order("proprietaire", { referencedTable: "compte_id" });
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    if (data && data.length > 0) {
+      console.log("Avant mec : ", data)
+
+      // Mois dans l'ordre voulu
+      const monthsOrder = [
+        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+      ];
+
+      // Initialiser record avec des arrays vides
+      const record: Record<string, number[]> = {};
+      monthsOrder.forEach((m) => {
+        record[m] = [];
+      });
+
+      data.forEach((cm: any) => {
+        const userId = cm.compte_id?.proprietaire;
+        if (userId == null) return;
+
+        // Mois abrégé (ex: "Apr")
+        const month = format(new Date(cm.date), "MMM");
+
+        // Initialiser tableau avec 0 si pas encore défini
+        if (!record[month]) {
+          record[month] = [];
+        }
+
+        // Placer la valeur au bon index user
+        record[month].push(cm.montant);
+      });
+
+      // Compléter les "trous" avec 0 si un user n’a pas de montant
+      monthsOrder.forEach((m) => {
+          if (record[m][0] == null) {
+            record[m][0] = 0;
+          }
+          if (record[m][1] == null) {
+            record[m][1] = 0;
+          }
+      });
+
+      setComptesMonth(record);
+    }
+  };
+
+
 
   const fetchTags = async () => {
     const { data, error } = await supabase.from("tag").select("*").order("nom")
@@ -272,6 +229,7 @@ export default function BankingDashboard() {
       fetchTransactions()
       fetchTags()
       fetchCompte()
+      fetchCompteMonth()
     }
   }, [session])
 
@@ -382,7 +340,7 @@ export default function BankingDashboard() {
 
             {/* TimeGraph : 2 cols, 1 row */}
             <div className="col-span-2 row-span-1">
-              <YearGraph/>
+              <YearGraph data={comptesMonth}/>
             </div>
           </div>
 

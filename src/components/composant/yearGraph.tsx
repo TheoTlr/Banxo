@@ -11,30 +11,32 @@ import {
     Legend,
 } from "recharts";
 
-const monthlyData = [
-    { month: "Jan", accountA: 1200, accountB: 800 },
-    { month: "Feb", accountA: 1500, accountB: 1100 },
-    { month: "Mar", accountA: 1700, accountB: 900 },
-    { month: "Apr", accountA: 1400, accountB: 1300 },
-    { month: "May", accountA: 1800, accountB: 1200 },
-    { month: "Jun", accountA: 1600, accountB: 1000 },
-];
+interface MonthlyBalanceChartProps {
+    data: Record<string, number[]>;
+}
 
-export default function MonthlyBalanceChart() {
+export default function MonthlyBalanceChart({ data }: MonthlyBalanceChartProps) {
+    // Transformer Record<string, number[]> en tableau [{ month, account1, account2 }]
+    const mergedData = Object.entries(data).map(([month, values]) => ({
+        month,
+        account1: values[0] ?? 0,
+        account2: values[1] ?? 0,
+    }));
+
     return (
         <div className="bg-background-card p-6 h-full rounded-2xl shadow-card w-full">
             {/* Header */}
             <div className="flex items-center justify-between mb-4">
                 <h2 className="font-semibold text-lg text-text-primary">
-                    Solde mensuel (2 comptes)
+                    Compte Annuel
                 </h2>
-                <span className="text-sm text-text-secondary">2025</span>
+                <span className="text-sm text-text-secondary">{ new Date().getFullYear() }</span>
             </div>
 
             {/* Chart */}
             <div className="h-72">
                 <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={monthlyData} barGap={6}>
+                    <BarChart data={mergedData} barGap={6}>
                         {/* Dégradés */}
                         <defs>
                             <linearGradient id="gradientA" x1="0" y1="0" x2="0" y2="1">
@@ -74,17 +76,17 @@ export default function MonthlyBalanceChart() {
 
                         {/* Barres avec dégradé */}
                         <Bar
-                            dataKey="accountA"
+                            dataKey="account1"
                             fill="url(#gradientA)"
                             radius={[6, 6, 0, 0]}
-                            name="Compte A"
+                            name="Compte Theo"
                             activeBar={false}
                         />
                         <Bar
-                            dataKey="accountB"
+                            dataKey="account2"
                             fill="url(#gradientB)"
                             radius={[6, 6, 0, 0]}
-                            name="Compte B"
+                            name="Compte Anais"
                             activeBar={false}
                         />
                     </BarChart>

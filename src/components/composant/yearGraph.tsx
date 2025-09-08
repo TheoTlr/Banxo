@@ -10,14 +10,13 @@ import {
     ResponsiveContainer,
     Legend,
 } from "recharts";
+import {useBankingStore} from "@/store/bankingStore";
 
-interface MonthlyBalanceChartProps {
-    data: Record<string, number[]>;
-}
+export default function MonthlyBalanceChart() {
+    const compteMonth = useBankingStore((state) => state.comptesMonth)
 
-export default function MonthlyBalanceChart({ data }: MonthlyBalanceChartProps) {
     // Transformer Record<string, number[]> en tableau [{ month, account1, account2 }]
-    const mergedData = Object.entries(data).map(([month, values]) => ({
+    const mergedData = Object.entries(compteMonth).map(([month, values]) => ({
         month,
         account1: values[0] ?? 0,
         account2: values[1] ?? 0,

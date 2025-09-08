@@ -1,22 +1,13 @@
 "use client";
 
 import {ArrowDownLeft, ArrowUpRight} from "lucide-react";
+import {useBankingStore} from "@/store/bankingStore";
 
-interface Transaction {
-    id: number
-    compte_id: number
-    montant: number
-    description: string
-    date_transaction: string
-    type_transaction: "REVENU" | "DEPENSE"
-    tags: { tag: { id: number; nom: string } }[]
-}
+export default function TransactionList() {
+    const transactions = useBankingStore((state) => state.transactions)
+    console.log("Transaction :", transactions)
 
-interface TransactionListProps {
-    transactions: Transaction[];
-}
 
-export default function TransactionList({ transactions }: TransactionListProps) {
     return (
         <div className="shadow-card rounded-2xl w-full p-4 h-full flex flex-col">
             {/* Header */}

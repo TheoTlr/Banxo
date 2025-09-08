@@ -22,10 +22,9 @@ interface Tag {
 interface DialogTransactionProps {
     comptes: Compte[];
     tags: Tag[];
-    onTransactionCreated: () => void;
 }
 
-export default function DialogTransaction({ comptes, tags, onTransactionCreated }: DialogTransactionProps) {
+export default function DialogTransaction({ comptes, tags }: DialogTransactionProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [newTransaction, setNewTransaction] = useState({
         compte_id: 0,
@@ -77,7 +76,6 @@ export default function DialogTransaction({ comptes, tags, onTransactionCreated 
             type_transaction: "expense",
         });
         setIsOpen(false);
-        onTransactionCreated();
     };
 
     return (

@@ -17,6 +17,7 @@ import YearGraph from "@/components/composant/yearGraph"
 import TagExpenses from "@/components/composant/tagExpenses"
 import Sidebar from "@/components/composant/sidebar"
 import { useBankingStore } from "@/store/bankingStore"
+import CandlestickChart from "@/components/composant/CandlestickChart";
 
 const regionData = [
   { name: "Bojongsoang", value: 854, color: "#FF4D94" },
@@ -154,7 +155,7 @@ export default function BankingDashboard() {
                 </div>
 
                 <div className="col-span-2 row-span-1">
-                  <YearGraph/>
+                  <CandlestickChart />
                 </div>
               </div>
             </div>
